@@ -2,10 +2,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_api/auth/register.dart';
+import 'package:my_api/produit/home-produit.dart';
 import 'package:my_api/service/authService.dart';
 import 'package:quickalert/quickalert.dart';
 
-import 'home.dart';
+import '../http-example/home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,7 +25,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login Page', style: GoogleFonts.lato())),
+      appBar: AppBar(
+        title: Text(
+          'Page de connexion',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.0,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey[800],
+      ),
       body: Center(
           child: SingleChildScrollView(
         child: Form(
@@ -68,9 +81,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextFormField(
                         validator: (e) {
                           if (e!.isEmpty) {
-                            return 'Email not found';
+                            return 'Veuillez entrer votre email';
                           } else if (!EmailValidator.validate(e)) {
-                            return 'Email not valid';
+                            return 'Email invalide';
                           }
                         },
                         onChanged: (e) {
@@ -93,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 40),
-                    child: Text('Password', style: GoogleFonts.lato()),
+                    child: Text('Mot de passe', style: GoogleFonts.lato()),
                   ),
                 ],
               ),
@@ -112,9 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: isVisible,
                       validator: (p) {
                         if (p!.isEmpty) {
-                          return 'Password not found ';
+                          return 'Veuillez entrer votre mot de passe';
                         } else if (p.length < 6) {
-                          return 'Password should have 6 characters';
+                          return 'Mot de passe doit avoir au moins 6 caractères';
                         }
                       },
                       onChanged: (p) {
@@ -135,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           border: InputBorder.none,
                           hintStyle: TextStyle(fontSize: 13),
-                          hintText: "Entrez votre Password"),
+                          hintText: "Entrez votre mot de passe"),
                     ),
                   ),
                 ),
@@ -145,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.deepPurple,
+                      primary: Colors.grey[800],
                       padding: EdgeInsets.symmetric(horizontal: 50)),
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
@@ -157,12 +170,10 @@ class _LoginPageState extends State<LoginPage> {
                         await AuthService()
                             .login(email, password)
                             .then((value) {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MainPage(
-                                        title: 'home',
-                                      )));
+                                  builder: (context) => HomeProduit()));
                           QuickAlert.show(
                               context: context,
                               type: QuickAlertType.success,
@@ -174,42 +185,49 @@ class _LoginPageState extends State<LoginPage> {
                         if (e.code == "user-not-found") {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("User not found"),
+                            content: Text("Cet utilisateur n'existe pas"),
                             backgroundColor: Colors.red,
                           ));
                         } else if (e.code == "wrong-password") {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("Wrong password"),
+                            content: Text("Mot de passe erroné"),
                             backgroundColor: Colors.red,
                           ));
                         } else if (e.code == "network-request-failed") {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("No internet"),
+                            content: Text("Pas d'internet"),
                             backgroundColor: Colors.red,
                           ));
                         }
                       }
                     }
                   },
-                  child: Text("Login", style: GoogleFonts.lato())),
+                  child: Text("Se connecter", style: GoogleFonts.lato())),
               SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Vous avez déja un compte ?',
+                    'Pas de compte? ',
                     style: TextStyle(fontSize: 10),
                   ),
                   GestureDetector(
-                      child: Text(
-                    'Cliquez ici',
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline),
-                  )),
+                    child: Text(
+                      'Cliquez ici',
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterPage()));
+                    },
+                  ),
                 ],
               ),
               SizedBox(

@@ -1,8 +1,11 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:my_api/home.dart';
+import 'package:my_api/http-example/home.dart';
+import 'package:my_api/produit/home-produit.dart';
+import 'package:my_api/splashScreen.dart';
 
-import 'login.dart';
+import 'auth/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +25,23 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
         ),
-        home: const LoginPage());
+        home: AnimatedSplashScreen(
+            splash: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(width: 100, child: Image.asset('assets/cart.png')),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Bienvenue',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                )
+              ],
+            ),
+            duration: 1000,
+            splashTransition: SplashTransition.rotationTransition,
+            backgroundColor: Colors.grey[300]!,
+            nextScreen: LoginPage()));
   }
 }

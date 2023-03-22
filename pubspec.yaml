@@ -41,6 +41,10 @@ dependencies:
   firebase_auth: ^4.2.10
   firebase_core: ^2.7.1
   cloud_firestore: ^4.4.4
+  firebase_storage:
+  image_picker:
+  animated_splash_screen:
+  another_flutter_splash_screen:
 
 dev_dependencies:
   flutter_test:
